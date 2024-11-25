@@ -1,0 +1,24 @@
+# HACK: Replace creds with environment variables
+
+dbt_transformations:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      threads: 4
+      host: postgres
+      port: 5432
+      user: airflow
+      pass: airflow
+      dbname: postgres
+      schema: public
+
+    # prod:
+    #   type: postgres
+    #   threads: 8
+    #   host: prod-db-host
+    #   port: 5432
+    #   user: prod_user
+    #   pass: prod_password
+    #   dbname: prod_db
+    #   schema: analytics
