@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_AIRFLOW_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync Airflow files to the MWAA S3 bucket with the AWS CLI
+        run: sh .github/scripts/upload_to_s3.sh
+        env:
+          AIRFLOW_BUCKET_NAME: ${{ vars.AIRFLOW_BUCKET_NAME }}
